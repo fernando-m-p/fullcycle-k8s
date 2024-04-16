@@ -5,6 +5,8 @@ metadata:
   name: goserver
   labels:
     apps: goserver
+  annotations:
+    kubernetes.io/change-cause: "Deployment: goserver com imagem v1"
 
 spec:
   selector:
