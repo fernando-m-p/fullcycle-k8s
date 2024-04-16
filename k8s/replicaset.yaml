@@ -18,5 +18,5 @@ spec:
     spec:
       containers:
       - name: goserver
-        image: "fermope/go-server:latest"
+        image: "fermope/go-server:v2"
 
