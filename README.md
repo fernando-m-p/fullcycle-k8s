@@ -111,3 +111,28 @@ Um objeto Deployment cria replicasets que gerenciam os pods, assim alterando o a
 Depois de uma alteração no arquivo o kubernetes vai matando os pods do replicaset anterior e vai startando os novos pods do novo replicaset. Assim sem downtime.
 
 Importante, o kubectl não mata o replicaset anterior apenas desativa os pods dele. Deixando ele disponível.
+
+#### 2.2.6. Rollout e Revisões
+
+Caso aconteça um erro em uma atualização do deployment e seja necessário retornar a versão anterior.
+
+**Para ver o histórico de versões**
+
+```shell
+kubectl rollout history deployment goserver
+```
+
+Para escrever uma mensagem no CHANGE-CAUSE adicione o atributo `metadata.annotations.kubernetes.io/change-cause` no seu arquivo .yaml
+
+**Para voltar para versão anterior**
+
+```shell
+    kubectl rollout undo deployment goserver
+```
+
+**Para voltar para uma versão específica x**
+
+
+```shell
+    kubectl rollout undo deployment goserver --to-revision=x
+```
