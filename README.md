@@ -104,3 +104,10 @@ Com o arquivo `k8s/replicaset.yaml` foi criado o primeiro replicaset, colocando 
 
 O ReplicaSet garante a disponibilidade, mas caso uma alteração no arquivo do replicaSet (`k8s/replicaset.yaml`) seja feita e aplicada (`kubectl apply -f k8s/replicaset.yaml`) a alteração não é replicado nos pods, para a alteração ter efeito os pods devem ser deletados, assim quando for criado o novo pod terá a nova alteração.
 
+#### 2.2.5. Implementando Deployment
+
+Um objeto Deployment cria replicasets que gerenciam os pods, assim alterando o atributo kind para Deployment resolvemos o problema de uma alteração na configuração que não é replicada nos pods.
+
+Depois de uma alteração no arquivo o kubernetes vai matando os pods do replicaset anterior e vai startando os novos pods do novo replicaset. Assim sem downtime.
+
+Importante, o kubectl não mata o replicaset anterior apenas desativa os pods dele. Deixando ele disponível.
