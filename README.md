@@ -99,3 +99,8 @@ kubectl port-forward pod/{nome-pod} {LocalPort}:{PortPod}
 Os ReplicaSet tem como objetivo manter um conjunto estável de Pods de réplica em execução a quaquer momento. (usado para garantir a disponibilidade)
 
 Com o arquivo `k8s/replicaset.yaml` foi criado o primeiro replicaset, colocando a especificação do pod anterior no atributo *spec.template* no atributo *spec.replicas* foi configurado quantos pods o replicaset deve garantir, caso um seja deletado ele recria outro com as mesmas especificações.
+
+#### 2.2.4. Problema do ReplicaSet
+
+O ReplicaSet garante a disponibilidade, mas caso uma alteração no arquivo do replicaSet (`k8s/replicaset.yaml`) seja feita e aplicada (`kubectl apply -f k8s/replicaset.yaml`) a alteração não é replicado nos pods, para a alteração ter efeito os pods devem ser deletados, assim quando for criado o novo pod terá a nova alteração.
+
