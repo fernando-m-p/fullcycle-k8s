@@ -136,3 +136,48 @@ Para escrever uma mensagem no CHANGE-CAUSE adicione o atributo `metadata.annotat
 ```shell
     kubectl rollout undo deployment goserver --to-revision=x
 ```
+
+### 2.3. Services
+
+#### 2.3.1. Conceito
+
+Service é um método para expor um aplicativo de rede que está sendo executado como um ou mais pods no seu cluster.
+
+No curso é apresentado os seguintes tipos de services:
+- ClusterIP
+- NodePort
+- LoadBalancer
+
+##### ClusterIP
+
+Expõe o Serviço em um IP interno do cluster. Escolhendo este valor torna o Serviço acessível apenas a partir do cluster. Este é o padrão que é usado se você não especificar explicitamente um para um Serviço. Você pode expor o Serviço à Internet pública usando Ingress ou um Gateway.type
+
+Exemplo:
+
+``` yaml
+    apiVersion: v1
+    kind: Service
+    metadata:
+    name: goserver-service
+    spec:
+    selector:
+        app: goserver
+    type: ClusterIP
+    ports:
+    - name: goserver-service
+        port: 80
+        targetPort: 8000
+        protocol: TCP
+```
+
+Lembrando que o atributo `port` é a porta de entrada do Service e `portTarget` é a saída do Service e entrada dos pods.
+
+
+##### NodePort
+
+O uso de um NodePort lhe dá a liberdade de configurar sua própria solução de balanceamento de carga, para configurar ambientes que não são totalmente suportados pelo Kubernetes, ou mesmo para expor os endereços IP de um ou mais nós diretamente.
+
+Cada nó no cluster configura para ouvir na porta atribuída e encaminhar o tráfego para um dos prontos pontos de extremidade associados a esse Serviço.
+
+obs: a porta especificada no atributo spec.ports.nodePort por padrão deve ser especificado no intervalo (30000-32767)
+
