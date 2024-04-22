@@ -181,3 +181,129 @@ Cada nó no cluster configura para ouvir na porta atribuída e encaminhar o trá
 
 obs: a porta especificada no atributo spec.ports.nodePort por padrão deve ser especificado no intervalo (30000-32767)
 
+##### LoadBalancer
+
+Em provedores de nuvem que oferecem suporte a balanceadores de carga externos, defina o campo para provisionar um balanceador de carga para seu Serviço. A criação real do balanceador de carga acontece de forma assíncrona, e as informações sobre o balanceador provisionado são publicadas no campo Serviço.
+
+O tráfego do balanceador de carga externo é direcionado para os Pods de back-end. A nuvem O provedor decide como ele é balanceado de carga.
+
+
+### 2.4. Objetos de configuração
+
+#### 2.4.1. Variáveis de Ambiente
+
+A primeira forma de trabalhar com variáveis de ambiente é adicionar a variável de ambiente no arquivo .yaml do Deployment
+
+Especificando no atributo `spec.template.spec.containers.env`, mas não é uma boa prática utilizar
+
+Versão do Deployment utilizando as variáveis de ambientes HardCode
+```yaml
+
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: goserver
+  labels:
+    apps: goserver
+  annotations:
+    kubernetes.io/change-cause: "Deployment: goserver com imagem v1"
+
+spec:
+  selector:
+    matchLabels:
+      app: goserver
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: "goserver"
+    spec:
+      containers:
+      - name: goserver
+        image: "fermope/go-server:v3"
+        env:
+        - name: NAME
+          value: "Fernando"
+        - name: AGE
+          value: "33"
+```
+
+#### 2.4.2. Utilizando ConfigMap
+
+
+Um ConfigMap é um objeto de API usado para armazenar dados não confidenciais em pares chave-valor. Pod pode consumir ConfigMaps como variáveis de ambiente, argumentos de linha de comando ou como arquivos de configuração em um volume.
+
+Há quatro maneiras diferentes de usar um ConfigMap para configurar um recipiente dentro de um Pod:
+
+1. Dentro de um contêiner comando e args
+2. Variáveis de ambiente para um contêiner
+3. Adicionar um arquivo no volume somente leitura, para o aplicativo ler
+4. Escrever código para ser executado dentro do Pod que usa a API do Kubernetes para ler um ConfigMap
+
+Para os três primeiros métodos, o Kubelet usa os dados de o ConfigMap quando ele inicia contêiner(es) para um Pod.
+
+``` yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: configmap-demo-pod
+spec:
+  containers:
+    - name: demo
+      image: alpine
+      command: ["sleep", "3600"]
+      env:
+        # Define the environment variable
+        - name: PLAYER_INITIAL_LIVES # Notice that the case is different here
+                                     # from the key name in the ConfigMap.
+          valueFrom:
+            configMapKeyRef:
+              name: game-demo           # The ConfigMap this value comes from.
+              key: player_initial_lives # The key to fetch.
+        - name: UI_PROPERTIES_FILE_NAME
+          valueFrom:
+            configMapKeyRef:
+              name: game-demo
+              key: ui_properties_file_name
+      volumeMounts:
+      - name: config
+        mountPath: "/config"
+        readOnly: true
+  volumes:
+  # You set volumes at the Pod level, then mount them into containers inside that Pod
+  - name: config
+    configMap:
+      # Provide the name of the ConfigMap you want to mount.
+      name: game-demo
+      # An array of keys from the ConfigMap to create as files
+      items:
+      - key: "game.properties"
+        path: "game.properties"
+      - key: "user-interface.properties"
+        path: "user-interface.properties"
+        
+```
+
+#### 2.4.3. Secrets e variáveis de ambiente
+
+Um Segredo é um objeto que contém uma pequena quantidade de dados confidenciais, como uma senha, um token ou uma chave. Tais informações poderiam, de outra forma, ser colocadas em um Vagem especificação ou em um imagem do contêiner. Usando um Segredo significa que você não precisa incluir dados confidenciais em seu código do aplicativo.
+
+Como os Segredos podem ser criados independentemente dos Pods que os usam, há é menor o risco de o Segredo (e seus dados) serem expostos durante o fluxo de trabalho de criação, visualização e edição de Pods. Kubernetes e aplicativos que são executados em seu cluster, também pode tomar precauções adicionais com Secrets, como evitar gravar dados confidenciais em armazenamento não volátil.
+
+o arquivo `k8s/secret.yaml` é um exemplo de um Secret do tipo Opaque
+
+```yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: goserver-secret
+type: Opaque
+data:
+  USER: "RmVybmFuZG8K" #Os segredos são adicionados em Base64
+  PASSWORD: "MTIzNDU2Cg=="
+```
+
+[Veja mais](https://kubernetes.io/docs/concepts/configuration/secret/)
+
+
