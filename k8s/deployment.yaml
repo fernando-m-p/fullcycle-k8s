@@ -20,5 +20,32 @@ spec:
     spec:
       containers:
       - name: goserver
-        image: "fermope/go-server:v1"
+        image: "fermope/go-server:v4"
+        envFrom:
+        - configMapRef:
+            name: goserver-env
+        - secretRef:
+            name: goserver-secret
+        volumeMounts:
+        - mountPath: "/go/myfamily"
+          name: config
+          readOnly: true
+        env:
+        - name: NAME
+          valueFrom:
+            configMapKeyRef:
+              name: goserver-env
+              key: NAME
+        - name: AGE
+          valueFrom:
+            configMapKeyRef:
+              name: goserver-env
+              key: AGE
+      volumes:
+      - name: config
+        configMap:
+          name: configmap-family
+          items:
+          - key: members
+            path: "family.txt"
 
