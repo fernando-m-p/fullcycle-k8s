@@ -333,3 +333,25 @@ spec:
             successThreshold: 1 # Numero de verificações para a aplicação ser considerada saudável
 [...]
 ```
+
+#### 2.5.2. ReadinessProbe
+
+Com o ReadinessProbe podemos podemos verificar se a nossa aplicação está saudável antes de encaminhar o tráfego para os Pods.
+
+```yaml
+[...]
+spec:
+  template:
+    spec:
+        containers:
+        - name: goserver
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: 8000
+            periodSeconds: 3 # Periódicidade da verificação
+            failureThreshold: 1 # Numero de verificações para ser considerada uma falha na aplicação
+            initialDelaySeconds: 10 # Quanto tempo inicial para iniciar as verificações
+[...]
+```
+
