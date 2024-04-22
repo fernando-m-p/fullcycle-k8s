@@ -6,7 +6,7 @@ metadata:
   labels:
     apps: goserver
   annotations:
-    kubernetes.io/change-cause: "Deployment: goserver com imagem v1"
+    kubernetes.io/change-cause: "Deployment: goserver com imagem v5"
 
 spec:
   selector:
@@ -20,7 +20,15 @@ spec:
     spec:
       containers:
       - name: goserver
-        image: "fermope/go-server:v4"
+        image: "fermope/go-server:v5"
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: 8000
+          periodSeconds: 5 #De quanto em quanto tempo verifica
+          failureThreshold: 3 #Quantas vezes pra falhar vai reiniciar
+          timeoutSeconds: 1 #Quanto tempo deve demorar essa verificação, caso demore x segundos e não respondeu ainda, considere erro
+          successThreshold: 1 # Quantas verificações de sucesso é considerado que é um sucesso
         envFrom:
         - configMapRef:
             name: goserver-env
