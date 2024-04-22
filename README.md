@@ -355,3 +355,23 @@ spec:
 [...]
 ```
 
+#### 2.5.3. StartupProbe
+
+O StartupProbe é utilizado para verificar se a aplicação iniciou colocando para verificar periódicamente e com um FailThreshoud alto é uma boa técnica para substituir o initialDelaySeconds.
+
+Ou seja com o initialDelaySeconds de 90 segundos a aplicação só vai ser testada depois dos 90 segundos, com o startupProbe com o periodSeconds 3 e o failThreshoud 30 vai ser verificado os 90 segundos e quando a aplicação ficar saudável vai livberar o tráfego, tornando assim a aplicação disponível entre 3 e no máximo 90 segundos.
+
+
+```yaml
+spec:
+  template:
+    spec:
+        containers:
+        - name: goserver
+          startupProbe:
+            httpGet:
+              path: /healthz
+              port: 8000
+            periodSeconds: 3
+            failureThreshold: 30
+```
