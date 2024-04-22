@@ -307,3 +307,29 @@ data:
 [Veja mais](https://kubernetes.io/docs/concepts/configuration/secret/)
 
 
+### 2.5. Probes
+
+Em vários cenários é muito importante termos uma forma de informar se a aplicação está rodando, seja para avisar a equipe de manutenção ou seja para realizar tarefas automatizadas.
+
+#### 2.5.1. LivenessProbe
+
+Com o LivenessProbe podemos reiniciar os Pods da nossa aplicação, baseado em uma verificação periódica.
+
+```yaml
+[...]
+spec:
+  template:
+    spec:
+        containers:
+        - name: goserver
+          image: "fermope/go-server:v5"
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 8000
+            periodSeconds: 5 # Periódicidade da verificação
+            failureThreshold: 3 # Numero de verificações para ser considerada uma falha na aplicação e ser reiniciado o Pod
+            timeoutSeconds: 1 # Timeout para a verificação
+            successThreshold: 1 # Numero de verificações para a aplicação ser considerada saudável
+[...]
+```
