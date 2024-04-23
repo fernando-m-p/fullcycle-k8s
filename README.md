@@ -404,6 +404,6 @@ O PersistentVolumeClaim é uma solicitação de armazenamento por um usuário.
 
 O arquivo `k8s/go-server-pvc.yaml` é um exemplo de um PersistentVolumeClaim, ele foi montado no Deployment como foi montado outros volumes, mas caso um pod seja excluído os dados não serão perdidos, 
 
-> [!CAUTION]
-> OBS: como o modo de acesso é ReadWriteOnce pods em outros nodes não vão 
+> [!WARNING]
+> Como o modo de acesso é ReadWriteOnce pods em outros nodes não vão 
 > conseguir ver esses arquivos.
