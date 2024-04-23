@@ -375,3 +375,20 @@ spec:
             periodSeconds: 3
             failureThreshold: 30
 ```
+
+
+### 2.6. Resources e HPA
+
+O gerenciamento de recursos de um pod é um passo importante para escalar a aplicação. Quando você especifica um pod, é possível especificar quanto de cada recurso cada pod vai precisar.
+
+Os recursos são especificados nos atributos:
+- spec.containers[].resources.limits. -> Recurso máximo que o pod pode consumir
+- spec.containers[].resources.resource -> Recurso mínimo a ser reservado quando criar o pod.
+
+Os recursos mais comuns são a memória e a cpu, onde as memórias são medidos em bytes e a cpu é medido em unidades de cpu, onde uma unidade de CPU equivale a 1 núcleo físico de CPU ou 1 núcleo virtual.
+
+#### 2.6.1. Criando e configurando HPA
+
+No Kubernetes, um HorizontalPodAutoscaler atualiza automaticamente um recurso de carga de trabalho (como um Deployment ou StatefulSet), com o objetivo de dimensionar automaticamente a carga de trabalho para corresponder à demanda.
+
+[Veja Mais sobre Horizontal Pod Autoscaling](https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/)
