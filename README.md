@@ -392,3 +392,18 @@ Os recursos mais comuns são a memória e a cpu, onde as memórias são medidos 
 No Kubernetes, um HorizontalPodAutoscaler atualiza automaticamente um recurso de carga de trabalho (como um Deployment ou StatefulSet), com o objetivo de dimensionar automaticamente a carga de trabalho para corresponder à demanda.
 
 [Veja Mais sobre Horizontal Pod Autoscaling](https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/)
+
+
+### 2.7. Statefulsets e volumes persistentes
+
+A problemática nessa parte é a utilização de armazenamento persistente para aplicações que guardam estado (statefull), no kubernetes existe dois recursos para gerenciamento de armazenamento: PersistentVolume e PersistentVolumeClaim
+
+Um *PersistentVolume* é um recurso de um cluster, é uma parte do armazenamento no cluster que foi provisionado.
+
+O PersistentVolumeClaim é uma solicitação de armazenamento por um usuário.
+
+O arquivo `k8s/go-server-pvc.yaml` é um exemplo de um PersistentVolumeClaim, ele foi montado no Deployment como foi montado outros volumes, mas caso um pod seja excluído os dados não serão perdidos, 
+
+> [!CAUTION]
+> OBS: como o modo de acesso é ReadWriteOnce pods em outros nodes não vão 
+> conseguir ver esses arquivos.
