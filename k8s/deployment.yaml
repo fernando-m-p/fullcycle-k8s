@@ -61,22 +61,18 @@ spec:
             name: goserver-env
         - secretRef:
             name: goserver-secret
+
         volumeMounts:
+        - mountPath: "/go/pvc"
+          name: goserver-volume
         - mountPath: "/go/myfamily"
           name: config
           readOnly: true
-        env:
-        - name: NAME
-          valueFrom:
-            configMapKeyRef:
-              name: goserver-env
-              key: NAME
-        - name: AGE
-          valueFrom:
-            configMapKeyRef:
-              name: goserver-env
-              key: AGE
+
       volumes:
+      - name: goserver-volume
+        persistentVolumeClaim:
+          claimName: goserver-pvc
       - name: config
         configMap:
           name: configmap-family
