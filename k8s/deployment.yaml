@@ -12,7 +12,7 @@ spec:
   selector:
     matchLabels:
       app: goserver
-  replicas: 2
+  replicas: 1
   template:
     metadata:
       labels:
@@ -21,31 +21,41 @@ spec:
       containers:
       - name: goserver
         image: "fermope/go-server:v5.1"
-         startupProbe:
-            httpGet:
-              path: /healthz
-              port: 8000
-            periodSeconds: 4
-            failureThreshold: 30
 
-          readinessProbe:
-            httpGet:
-              path: /healthz
-              port: 8000
-            periodSeconds: 3
-            failureThreshold: 1
-            # initialDelaySeconds: 10
+        resources:
+          requests: # Recursos que será reservado por pod
+            cpu: "0.02"
+            memory: 20Mi
+          limits:
+            cpu: "0.02"
+            memory: 25Mi
 
-          livenessProbe:
-            httpGet:
-              path: /healthz
-              port: 8000
-            periodSeconds: 5
-            failureThreshold: 1
-            timeoutSeconds: 1
-            successThreshold: 1
-            # initialDelaySeconds: 15
-            
+
+        startupProbe:
+          httpGet:
+            path: /healthz
+            port: 8000
+          periodSeconds: 4
+          failureThreshold: 30
+
+        readinessProbe:
+          httpGet:
+            path: /healthz
+            port: 8000
+          periodSeconds: 3
+          failureThreshold: 1
+          # initialDelaySeconds: 10
+
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: 8000
+          periodSeconds: 5
+          failureThreshold: 1
+          timeoutSeconds: 1
+          successThreshold: 1
+          # initialDelaySeconds: 15
+
         envFrom:
         - configMapRef:
             name: goserver-env
