@@ -407,3 +407,32 @@ O arquivo `k8s/go-server-pvc.yaml` é um exemplo de um PersistentVolumeClaim, el
 > [!WARNING]
 > Como o modo de acesso é ReadWriteOnce pods em outros nodes não vão 
 > conseguir ver esses arquivos.
+
+
+#### 2.7.1. Criando o StatefulSet
+
+StatefulSet é o objeto de API de carga de trabalho usado para gerenciar aplicativos com monitoração de estado.
+
+Os StatefulSets criam um grupo de Pods com especificação identica, mas mantem a identidade de cada pod.
+
+StatefulSets são valiosos para aplicativos que exigem um ou mais dos seguinte.
+
+- Identificadores de rede exclusivos e estáveis.
+- Armazenamento estável e persistente.
+- Implantação e dimensionamento ordenados e graciosos.
+- Atualizações contínuas ordenadas e automatizadas.
+
+
+no exemplo do curso foi colocado um banco de dados, onde o pod 0 é o master e os outros os slave
+
+##### Partes importantes:
+- O nome do service deve ter o atributo `spec.ClusterIP: None` no seu Service (Headlessservice);
+- O nome do Service deve ser o mesmo especificado no seu StatefulSet no atributo `spec.serviceName`
+- Com o service e o StatefulSet configurado pode se acessado um pod específico ou o service que balanceará para um pod.
+
+
+#### Volume dinâmico com statefulset
+
+É possível fazer com que quando for criado uma réplica seja requisitado um volume baseado em um template.
+Caso um pod caia, o schedule do kubernetes vai perceber e criar um novo pod e linkar o volume do pod antigo, tornando persistente os dados.
+
